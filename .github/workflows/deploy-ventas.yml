@@ -22,8 +22,7 @@ jobs:
     - name: Compilar con Maven (Generar JAR)
       run: |
         cd "proyecto semestral/back-Ventas_SpringBoot"
-        chmod +x mvnw
-        ./mvnw clean package -DskipTests
+        mvn clean package -DskipTests
 
     - name: Configurar credenciales de AWS
       uses: aws-actions/configure-aws-credentials@v2
