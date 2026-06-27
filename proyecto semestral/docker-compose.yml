@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # 1. Base de Datos (Si la necesitan los backends)
+  db:
+    image: mysql:8.0
+    container_name: base-datos
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: tienda
+    ports:
+      - "3306:3306"
+
+ # 2. Backend de Ventas
+  backend-ventas:
+    build:
+      context: ./back-Ventas_SpringBoot/Springboot-API-REST
+      dockerfile: Dockerfile
+    container_name: backend-ventas
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/tienda?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin
+
+  # 3. Backend de Despachos
+  backend-despachos:
+    build:
+      context: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+      dockerfile: Dockerfile
+    container_name: backend-despachos
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/tienda?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin
+      
+  # 4. Frontend
+  frontend:
+    build:
+      context: ./FRONT_DESPACHO
+      dockerfile: Dockerfile
+    container_name: frontend-app
+    ports:
+      - "80:80"
+    depends_on:
+      - backend-ventas
+      - backend-despachos
