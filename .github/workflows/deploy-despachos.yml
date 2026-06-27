@@ -21,7 +21,7 @@ jobs:
 
     - name: Compilar con Maven (Generar JAR)
       run: |
-        cd "proyecto semestral/back-Despachos_SpringBoot/API-REST-DESPACHO"
+        cd "proyecto semestral/back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO"
         mvn clean package -DskipTests
 
     - name: Configurar credenciales de AWS
@@ -42,6 +42,6 @@ jobs:
         ECR_REPOSITORY: backend-despacho-innovatech
         IMAGE_TAG: latest
       run: |
-        cd "proyecto semestral/back-Despachos_SpringBoot/API-REST-DESPACHO"
+        cd "proyecto semestral/back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO"
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
