@@ -1,0 +1,47 @@
+name: Deploy Despachos Backend to ECR
+
+on:
+  push:
+    branches: [ deploy ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    - name: Configurar JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Compilar con Maven (Generar JAR)
+      run: |
+        cd "proyecto semestral/back-Despachos_SpringBoot/Springboot-API-REST"
+        mvn clean package -DskipTests
+
+    - name: Configurar credenciales de AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: us-east-1
+
+    - name: Login en Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag y push a Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: backend-despacho-innovatech
+        IMAGE_TAG: latest
+      run: |
+        cd "proyecto semestral/back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO"
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
