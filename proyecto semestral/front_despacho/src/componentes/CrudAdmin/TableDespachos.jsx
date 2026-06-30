@@ -8,7 +8,7 @@ export const TableDespachos = () => {
 
   const despacho = async () => {
     await axios
-      .get("http://alb-innovatech-907121762.us-east-1.elb.amazonaws.com/api/v1/despachos", {
+      .get("http://alb-innovatech-588814069.us-east-1.elb.amazonaws.com/api/v1/despachos", {
         headers:{
               'Content-Type': 'application/json',
               'Accept': 'application/json'

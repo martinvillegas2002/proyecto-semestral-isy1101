@@ -44,7 +44,7 @@ services:
   # 4. Frontend
   frontend:
     build:
-      context: ./FRONT_DESPACHO
+      context: ./front_despacho
       dockerfile: Dockerfile
     container_name: frontend-app
     ports:
