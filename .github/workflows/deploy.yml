@@ -32,6 +32,6 @@ jobs:
           docker build -t $ECR_REGISTRY/frontend-innovatech:latest "./proyecto semestral/front_despacho"
           docker push $ECR_REGISTRY/frontend-innovatech:latest
 
-     # - name: Deploy a ECS
-     #   run: |
-     #     aws ecs update-service --cluster "innovatech-cluster" --service "frontend-service" --force-new-deployment
+      - name: Deploy a ECS
+        run: |
+          aws ecs update-service --cluster "innovatech-cluster-OFICIAL" --service "frontend-service" --force-new-deployment
