@@ -1,37 +1,18 @@
-name: Deploy Frontend to ECS
+name: CI Pipeline - Build Only
 
 on:
   push:
-    branches: [ deploy ] # <--- Ajustado a lo que pide la pauta
+    branches: [ deploy ]
     paths:
-      - 'proyecto semestral/front_despacho/**' # <--- Solo corre si cambias el Front
+      - 'proyecto semestral/front_despacho/**'
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configurar credenciales AWS
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} 
-          aws-region: us-east-1 # <--- Puesto en duro para evitar un secret extra
-
-      - name: Login en Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag y push a ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      - name: Build Docker Image
         run: |
-          # El nombre debe coincidir EXACTAMENTE con el repo de ECR que creaste hoy
-          docker build -t $ECR_REGISTRY/frontend-innovatech:latest "./proyecto semestral/front_despacho"
-          docker push $ECR_REGISTRY/frontend-innovatech:latest
-
-      - name: Deploy a ECS
-        run: |
-          aws ecs update-service --cluster "innovatech-cluster-OFICIAL" --service "frontend-service" --force-new-deployment
+          docker build -t frontend-innovatech:latest "./proyecto semestral/front_despacho"
+          echo "Build completado exitosamente"
